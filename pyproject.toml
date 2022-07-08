@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nisa-di"
-version = "0.1.1"
+version = "0.2.1"
 description = "nisa dependencies injection pure python"
 authors = ["vaziria <manorder123@gmail.com>"]
 

@@ -7,6 +7,16 @@ __injection_data = {}
 def get_hash(path: str):
     return md5(path.encode('utf-8')).hexdigest()
 
+def mock_dependency(depend, newmock):
+    path = inspect.getfile(depend)
+    name = depend.__name__
+    
+    hash = f'{get_hash(path)}::{name}'
+    hash = get_hash(hash)
+    
+    __injection_data[hash] = newmock
+
+
 def get_dependency(depend):
     path = inspect.getfile(depend)
     name = depend.__name__
