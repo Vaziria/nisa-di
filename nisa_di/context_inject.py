@@ -1,3 +1,4 @@
+import asyncio
 import inspect
 import functools
 from contextvars import ContextVar, copy_context
@@ -15,12 +16,19 @@ def get_hash(path: str, *args, **kwargs):
 def run_in_new_context(callable, *args, **kwarg):
     context = copy_context()
     
-    @functools.wraps(callable)
-    def wrapper(*warg, **wkwarg):
-        
-        inject_context.set({})
-        
-        return callable(*warg, **wkwarg)
+    if asyncio.iscoroutinefunction(callable):
+        @functools.wraps(callable)
+        async def wrapper(*warg, **wkwarg):
+            
+            inject_context.set({})
+            return await callable(*warg, **wkwarg)
+    else:
+    
+        @functools.wraps(callable)
+        def wrapper(*warg, **wkwarg):
+            
+            inject_context.set({})
+            return callable(*warg, **wkwarg)
     
     return context.run(wrapper, *args, **kwarg)
 

@@ -50,7 +50,17 @@ async def diff_run():
     
     return cc
     
+
+async def cek_fungsi_data_async(url):
+    cc = get_context_dependency(WithVar, 12, "asd", 3, name="dasd")
+    print(url)
+
+
+@pytest.mark.asyncio
+async def test_function():
     
+    await run_in_new_context(cek_fungsi_data_async, "asdasd")
+
 
 @pytest.mark.asyncio
 async def test_context_inject():
