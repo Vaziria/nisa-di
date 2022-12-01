@@ -1,5 +1,6 @@
 import asyncio
 import pytest
+from unittest import mock
 from collections import OrderedDict
 from contextvars import copy_context
 from nisa_di.context_inject import get_context_dependency, inject_context, run_in_new_context
@@ -60,6 +61,25 @@ async def cek_fungsi_data_async(url):
 async def test_function():
     
     await run_in_new_context(cek_fungsi_data_async, "asdasd")
+    
+    
+@pytest.mark.asyncio
+async def test_dependent_async():
+    
+    execute = mock.MagicMock()
+    
+    async def data():
+        execute()
+        return 'test_dependent_async'
+    
+    async def main():
+        await get_context_dependency(data)
+        await get_context_dependency(data)
+        d = await get_context_dependency(data)    
+        print(d)
+    await run_in_new_context(main)
+    
+    execute.assert_called_once()
 
 
 @pytest.mark.asyncio

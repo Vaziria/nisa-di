@@ -45,7 +45,10 @@ def get_context_dependency(depend, *args, **kwargs):
     
     hasil = injection_data.get(hash)
     if hasil == None:
-        hasil = depend(*args, **kwargs)
+        if asyncio.iscoroutinefunction(depend):
+            hasil = asyncio.create_task(depend(*args, **kwargs))
+        else:
+            hasil = depend(*args, **kwargs)
         injection_data[hash] = hasil
     
     return hasil
